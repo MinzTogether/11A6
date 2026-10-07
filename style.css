@@ -1,0 +1,214 @@
+/* ===== Chúc mừng 20/10 – Hoàng hôn dưới tán anh đào ===== */
+:root{
+  --pink:#FFC1D6; --rose:#F48FB1; --ivory:#FFF8F0; --orange:#FF9A4D; --gold:#FFD27A;
+  --violet:#6A3D86; --night:#1D1B4A; --leaf:#7FBF7A; --ink:#3A2250;
+  --hand:"Dancing Script","Pacifico","Charm","Segoe Script","Brush Script MT",cursive;
+  --serif:"Playfair Display",Georgia,"Times New Roman",serif;
+  --ui:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  /* Easing (không dùng linear cho bất kỳ chuyển động nhìn thấy được) */
+  --e-out:cubic-bezier(.22,1,.36,1);        /* easeOutExpo */
+  --e-io:cubic-bezier(.65,0,.35,1);         /* easeInOutCubic */
+  --e-spring:cubic-bezier(.34,1.56,.64,1);  /* easeOutBack (spring nhẹ) */
+  --fade:1.6s;                              /* thời lượng cross-fade điện ảnh */
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+  --sal:env(safe-area-inset-left,0px); --sar:env(safe-area-inset-right,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none;background:var(--night);color:var(--ivory);font-family:var(--ui);-webkit-text-size-adjust:100%}
+body{position:fixed;inset:0;touch-action:none;-webkit-user-select:none;user-select:none}
+#app{position:fixed;inset:0;height:100vh;height:100dvh;overflow:hidden}
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+input,button{font:inherit;color:inherit}
+input{-webkit-user-select:text;user-select:text;touch-action:manipulation}
+button{cursor:pointer;border:0;background:none;touch-action:manipulation}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.hand{font-family:var(--hand);font-weight:700}
+.noscript{position:fixed;inset:0;z-index:99;display:grid;place-items:center;padding:24px;text-align:center;background:var(--night);color:var(--ivory);font-size:18px}
+
+/* ===== Overlay chung (nhập tên, màn hình chờ) ===== */
+.overlay{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;
+  padding:calc(20px + var(--sat)) calc(20px + var(--sar)) calc(20px + var(--sab)) calc(20px + var(--sal));
+  opacity:1;visibility:visible;transition:opacity var(--fade) var(--e-io),visibility 0s}
+.overlay.off{opacity:0;visibility:hidden;pointer-events:none;transition:opacity var(--fade) var(--e-io),visibility 0s var(--fade)}
+
+/* ===== Bước 1: overlay nhập tên ===== */
+#nameOverlay{
+  background:
+    radial-gradient(120% 90% at 20% 15%,rgba(255,193,214,.92),rgba(244,143,177,.55) 38%,rgba(244,143,177,0) 70%),
+    radial-gradient(110% 100% at 85% 90%,rgba(106,61,134,.95),rgba(29,27,74,.9) 62%),
+    linear-gradient(160deg,#FFC1D6,#6A3D86 55%,#1D1B4A);
+  -webkit-backdrop-filter:blur(16px) saturate(1.15);backdrop-filter:blur(16px) saturate(1.15)}
+#introCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+.glass{position:relative;z-index:2;width:min(92vw,460px);text-align:center;
+  padding:clamp(26px,5vw,40px) clamp(22px,5vw,38px) clamp(24px,4vw,34px);border-radius:32px;
+  background:linear-gradient(155deg,rgba(255,255,255,.24),rgba(106,61,134,.48));
+  -webkit-backdrop-filter:blur(22px) saturate(1.3);backdrop-filter:blur(22px) saturate(1.3);
+  box-shadow:0 30px 70px -18px rgba(29,27,74,.65),0 0 60px rgba(244,143,177,.22);
+  animation:pop 1.1s var(--e-spring) .15s both}
+/* Viền gradient mảnh */
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,193,214,.95),rgba(255,210,122,.6) 45%,rgba(244,143,177,.9));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude}
+@keyframes pop{from{opacity:0;transform:translateY(22px) scale(.84)}to{opacity:1;transform:none}}
+
+#nameTitle{font-size:clamp(30px,6.4vw,44px);line-height:1.15;color:var(--ivory);
+  text-shadow:0 2px 18px rgba(29,27,74,.55),0 0 24px rgba(255,193,214,.5)}
+.sub{margin-top:10px;font-size:clamp(14px,3.4vw,16px);letter-spacing:.02em;color:rgba(255,248,240,.94)}
+.field{margin-top:24px}
+#nameInput{width:100%;height:56px;padding:0 20px;border-radius:18px;border:1.5px solid rgba(255,255,255,.55);
+  background:rgba(255,248,240,.92);color:var(--ink);font-size:18px;text-align:center;outline:none;
+  transition:border-color .5s var(--e-out),box-shadow .6s var(--e-out),transform .6s var(--e-out)}
+#nameInput::placeholder{color:rgba(58,34,80,.58)}
+#nameInput:focus{border-color:var(--rose);transform:translateY(-1px);
+  box-shadow:0 0 0 4px rgba(244,143,177,.3),0 0 30px rgba(244,143,177,.65)}
+#nameInput.invalid{border-color:var(--orange);box-shadow:0 0 0 4px rgba(255,154,77,.28)}
+.shake{animation:shake .55s cubic-bezier(.36,.07,.19,.97) both}
+@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
+.error{min-height:22px;margin-top:10px;font-size:14px;color:#FFE2C2;opacity:0;transform:translateY(-4px);
+  transition:opacity .5s var(--e-out),transform .5s var(--e-out)}
+.error.show{opacity:1;transform:none}
+
+/* ===== Nút chính (ripple + hover nhấc nhẹ) ===== */
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 38px;
+  border-radius:999px;font-weight:600;font-size:18px;letter-spacing:.02em;color:#4A1F55;
+  background:linear-gradient(135deg,#FFE6EE,#FFC1D6 45%,#FFD27A);
+  box-shadow:0 12px 30px -8px rgba(244,143,177,.8),0 0 0 1px rgba(255,255,255,.5) inset;
+  transition:transform .6s var(--e-out),box-shadow .6s var(--e-out),filter .6s var(--e-out)}
+.btn:hover{transform:translateY(-3px);filter:saturate(1.08);
+  box-shadow:0 18px 38px -8px rgba(244,143,177,.9),0 0 0 1px rgba(255,255,255,.6) inset}
+.btn:active{transform:translateY(0) scale(.97);transition-duration:.25s}
+#startBtn{margin-top:18px;width:100%}
+.ripple{position:absolute;border-radius:50%;pointer-events:none;width:var(--d);height:var(--d);left:var(--x);top:var(--y);
+  margin:calc(var(--d) / -2) 0 0 calc(var(--d) / -2);
+  background:radial-gradient(circle,rgba(255,255,255,.85),rgba(255,255,255,0) 70%);
+  animation:ripple .85s var(--e-out) forwards}
+@keyframes ripple{from{transform:scale(0);opacity:.9}to{transform:scale(1);opacity:0}}
+
+/* ===== Bước 2: màn hình chờ ===== */
+#loading{z-index:20;flex-direction:column;background:radial-gradient(90% 80% at 50% 40%,#5B2F7A,#2A1F5C 60%,#1D1B4A)}
+.lotus{position:relative;width:min(72vw,40vh,380px);height:min(72vw,40vh,380px)}
+.load-info{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:6px;width:min(80vw,380px);text-align:center}
+.percent{font-family:var(--serif);font-weight:700;font-size:clamp(36px,8vw,60px);color:var(--ivory);
+  text-shadow:0 0 28px rgba(255,193,214,.6);font-variant-numeric:tabular-nums}
+.load-text{min-height:1.4em;font-family:var(--hand);font-size:clamp(20px,4.6vw,28px);color:var(--pink)}
+.bar{width:100%;height:6px;border-radius:99px;overflow:hidden;background:rgba(255,248,240,.16)}
+.bar i{display:block;width:100%;height:100%;border-radius:inherit;transform-origin:left center;transform:scaleX(0);
+  background:linear-gradient(90deg,#F48FB1,#FFC1D6,#FFD27A);box-shadow:0 0 14px rgba(255,193,214,.8)}
+.note{min-height:1.2em;font-size:13px;color:rgba(255,248,240,.85);opacity:0;transition:opacity .8s var(--e-out)}
+.note.show{opacity:1}
+
+/* Flash sáng dịu khi vào cảnh */
+#flash{position:fixed;inset:0;z-index:40;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at 50% 46%,rgba(255,246,222,.96),rgba(255,214,170,.55) 42%,rgba(255,193,214,0) 72%)}
+#flash.on{animation:flash 1.5s var(--e-io) both}
+@keyframes flash{0%{opacity:0}35%{opacity:1}100%{opacity:0}}
+
+/* ===== Lời chúc (DOM overlay; vị trí do ui.js đặt qua --wx / --wy / --ww theo toạ độ thế giới) ===== */
+.wish{position:absolute;z-index:6;left:var(--wx,72%);top:var(--wy,52%);width:var(--ww,min(46vw,720px));
+  transform:translate(-50%,-50%);text-align:center;pointer-events:none;opacity:0;visibility:hidden}
+.wish.on{opacity:1;visibility:visible}
+/* Lớp nền rất nhẹ phía sau chữ để dễ đọc trên mọi nền */
+.wish-glow{position:absolute;inset:-18% -14%;z-index:-1;border-radius:50%;opacity:0;transition:opacity 2.2s var(--e-out);
+  background:radial-gradient(closest-side,rgba(29,27,74,.55),rgba(74,50,120,.3) 55%,rgba(29,27,74,0) 100%)}
+.wish.on .wish-glow{opacity:1}
+.wish-lines{display:flex;flex-direction:column;gap:clamp(8px,1.6vw,18px)}
+.wl{font-family:var(--hand);font-weight:600;font-size:clamp(20px,2.5vw,38px);line-height:1.38;color:var(--ivory);
+  text-shadow:0 0 18px rgba(255,194,122,.55),0 2px 12px rgba(29,27,74,.7);
+  opacity:0;transform:translateY(14px);filter:blur(8px);
+  transition:opacity 1.5s var(--e-out),transform 1.5s var(--e-out),filter 1.5s var(--e-out)}
+.wl.show{opacity:1;transform:none;filter:blur(0)}
+/* Dòng đầu hiện theo từng từ (ui.js bọc mỗi từ trong .w và đặt transition-delay) */
+.wl .w{display:inline-block;white-space:nowrap;opacity:0;transform:translateY(10px);filter:blur(6px);
+  transition:opacity 1.1s var(--e-out),transform 1.1s var(--e-out),filter 1.1s var(--e-out)}
+.wl.show .w{opacity:1;transform:none;filter:blur(0)}
+.wl.title{font-family:var(--serif);font-weight:700;font-size:clamp(24px,3.1vw,46px);letter-spacing:.04em}
+/* Tên người dùng: gradient hồng – vàng nhạt, glow nhịp thở */
+.name{display:inline-block;font-weight:700;color:transparent;-webkit-text-fill-color:transparent;text-shadow:none;
+  background:linear-gradient(100deg,#FFC1D6,#FFF1C9 40%,#FFD27A 60%,#FFC1D6);background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;animation:breathe 4.6s ease-in-out infinite}
+@keyframes breathe{
+  0%,100%{background-position:0% 50%;filter:drop-shadow(0 0 6px rgba(255,194,122,.45))}
+  50%{background-position:100% 50%;filter:drop-shadow(0 0 16px rgba(255,194,122,.85))}}
+.wish-ornament{display:block;margin:clamp(6px,1.2vw,14px) auto 0;width:min(46%,240px);height:auto;
+  opacity:0;transform:scale(.85);transition:opacity 1.6s var(--e-out),transform 1.6s var(--e-spring)}
+.wish-ornament.show{opacity:1;transform:none}
+
+/* ===== Nút điều khiển ===== */
+.pill{position:fixed;z-index:12;left:50%;bottom:calc(26px + var(--sab));padding:12px 28px;border-radius:999px;
+  font-size:16px;font-weight:600;color:var(--ivory);
+  background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(106,61,134,.55));border:1px solid rgba(255,193,214,.6);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  box-shadow:0 12px 32px -10px rgba(29,27,74,.7),0 0 24px rgba(244,143,177,.3);
+  opacity:0;visibility:hidden;transform:translate(-50%,16px) scale(.94);
+  transition:opacity .9s var(--e-out),transform .9s var(--e-spring),visibility 0s .9s,box-shadow .5s var(--e-out)}
+.pill.show{opacity:1;visibility:visible;transform:translate(-50%,0) scale(1);
+  transition:opacity .9s var(--e-out),transform .9s var(--e-spring),visibility 0s,box-shadow .5s var(--e-out)}
+.pill.show:hover{transform:translate(-50%,-3px) scale(1);box-shadow:0 16px 38px -10px rgba(29,27,74,.75),0 0 34px rgba(244,143,177,.55)}
+.pill.small{bottom:calc(76px + var(--sab));padding:9px 20px;font-size:14px}
+
+.icon-btn{position:fixed;z-index:12;top:calc(14px + var(--sat));right:calc(14px + var(--sar));width:46px;height:46px;border-radius:50%;
+  display:grid;place-items:center;color:var(--ivory);
+  background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(106,61,134,.5));border:1px solid rgba(255,193,214,.55);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 8px 22px -8px rgba(29,27,74,.7);
+  opacity:0;visibility:hidden;transform:scale(.8);
+  transition:opacity .8s var(--e-out),transform .7s var(--e-spring),visibility 0s .8s}
+.icon-btn.show{opacity:1;visibility:visible;transform:scale(1);
+  transition:opacity .8s var(--e-out),transform .7s var(--e-spring),visibility 0s}
+.icon-btn.show:hover{transform:scale(1.08)}
+.icon-btn.show:active{transform:scale(.94)}
+.icon-btn svg{fill:currentColor;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.icon-btn .wave{fill:none;transform-origin:12px 12px;transition:opacity .5s var(--e-out),transform .6s var(--e-spring)}
+.icon-btn .slash{fill:none;stroke-dasharray:10;stroke-dashoffset:10;transition:stroke-dashoffset .6s var(--e-out)}
+.icon-btn[aria-pressed="false"] .wave{opacity:0;transform:translateX(-4px) scale(.8)}
+.icon-btn[aria-pressed="false"] .slash{stroke-dashoffset:0}
+.icon-btn[aria-pressed="true"] .w1{animation:pulse 2.8s ease-in-out infinite}
+.icon-btn[aria-pressed="true"] .w2{animation:pulse 2.8s ease-in-out .35s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+.toast{position:fixed;z-index:50;left:50%;top:calc(18px + var(--sat));max-width:min(88vw,420px);padding:10px 20px;border-radius:999px;
+  font-size:14px;text-align:center;color:var(--ivory);pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(106,61,134,.62));border:1px solid rgba(255,193,214,.45);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  opacity:0;visibility:hidden;transform:translate(-50%,-14px);
+  transition:opacity .7s var(--e-out),transform .7s var(--e-out),visibility 0s .7s}
+.toast.show{opacity:1;visibility:visible;transform:translate(-50%,0);
+  transition:opacity .7s var(--e-out),transform .7s var(--e-out),visibility 0s}
+
+/* Bảng FPS (chỉ hiện khi bật DEBUG) */
+.debug{position:fixed;z-index:60;left:calc(8px + var(--sal));top:calc(8px + var(--sat));display:none;padding:6px 10px;border-radius:8px;
+  font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--ivory);
+  background:rgba(29,27,74,.72);white-space:pre;pointer-events:none}
+.debug.on{display:block}
+
+/* ===== Responsive ===== */
+@media (max-aspect-ratio:1/1){
+  .wl{font-size:clamp(18px,4.6vw,32px)}
+  .wl.title{font-size:clamp(22px,5.4vw,38px)}
+  .wish-ornament{width:min(52%,200px)}
+}
+@media (max-width:480px){
+  .glass{border-radius:26px}
+  .btn{min-height:52px}
+}
+
+/* ===== Giảm chuyển động (media query của hệ thống + class "reduce" do main.js đặt) ===== */
+@media (prefers-reduced-motion:reduce){
+  .glass{animation:none}
+  .wl,.wl .w{transform:none;filter:none;transition:opacity 1.2s ease}
+  .name{animation:none}
+  .wish-ornament{transform:none;transition:opacity 1.2s ease}
+  .ripple{display:none}
+  .shake{animation:none}
+  .pill,.icon-btn,.toast{transition:opacity .6s ease,visibility 0s}
+  .icon-btn[aria-pressed="true"] .w1,.icon-btn[aria-pressed="true"] .w2{animation:none}
+}
+html.reduce .glass{animation:none}
+html.reduce .wl,html.reduce .wl .w{transform:none;filter:none;transition:opacity 1.2s ease}
+html.reduce .name{animation:none}
+html.reduce .wish-ornament{transform:none;transition:opacity 1.2s ease}
+html.reduce .ripple{display:none}
+html.reduce .shake{animation:none}
+html.reduce .pill,html.reduce .icon-btn,html.reduce .toast{transition:opacity .6s ease,visibility 0s}
+html.reduce .icon-btn[aria-pressed="true"] .w1,html.reduce .icon-btn[aria-pressed="true"] .w2{animation:none}

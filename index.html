@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#1D1B4A">
+<title>Chúc mừng 20/10 – Hoàng hôn dưới tán anh đào</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Pacifico&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<noscript><div class="noscript">Trang này cần bật JavaScript để hiển thị lời chúc.</div></noscript>
+
+<div id="app">
+  <!-- Cảnh chính (Canvas 2D, toàn bộ đồ hoạ vẽ procedural) -->
+  <canvas id="scene" aria-hidden="true"></canvas>
+
+  <!-- Lời chúc (DOM overlay, chữ luôn sắc nét; ui.js sẽ đặt vị trí qua --wx / --wy / --ww) -->
+  <div id="wish" class="wish" aria-live="polite">
+    <div class="wish-glow"></div>
+    <div id="wishLines" class="wish-lines"></div>
+    <canvas id="wishOrnament" class="wish-ornament" width="320" height="110" aria-hidden="true"></canvas>
+  </div>
+
+  <!-- Nút bật/tắt âm thanh (icon SVG, có trạng thái animation theo aria-pressed) -->
+  <button id="soundBtn" class="icon-btn" type="button" aria-label="Bật hoặc tắt nhạc" aria-pressed="true">
+    <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+      <path class="spk" d="M4 9.5v5h3.6L12.5 19V5L7.6 9.5H4z"/>
+      <path class="wave w1" d="M15.4 9.2a4 4 0 0 1 0 5.6"/>
+      <path class="wave w2" d="M17.8 6.8a7.4 7.4 0 0 1 0 10.4"/>
+      <path class="slash" pathLength="10" d="M16 9.5l5 5M21 9.5l-5 5"/>
+    </svg>
+  </button>
+  <button id="musicPrompt" class="pill small" type="button">Chạm để bật nhạc</button>
+  <button id="replayBtn" class="pill" type="button">Xem lại</button>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="debug" class="debug" aria-hidden="true"></div>
+
+  <!-- Bước 2: màn hình chờ (tải thật) – ban đầu ẩn (class "off") -->
+  <section id="loading" class="overlay off" aria-label="Đang tải">
+    <canvas id="lotusCanvas" class="lotus" aria-hidden="true"></canvas>
+    <div class="load-info">
+      <div id="loadPercent" class="percent" aria-live="polite">0%</div>
+      <div id="loadText" class="load-text">Đang gieo hạt…</div>
+      <div class="bar" aria-hidden="true"><i id="loadBar"></i></div>
+      <div id="loadNote" class="note" role="status"></div>
+    </div>
+  </section>
+
+  <!-- Bước 1: overlay nhập tên -->
+  <section id="nameOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+    <canvas id="introCanvas" aria-hidden="true"></canvas>
+    <form id="nameForm" class="glass" novalidate autocomplete="off">
+      <h1 id="nameTitle" class="hand">Chào bạn, bạn tên là gì?</h1>
+      <p class="sub">Một món quà nhỏ cho ngày 20/10</p>
+      <div class="field" id="nameField">
+        <input id="nameInput" name="name" type="text" inputmode="text" maxlength="30"
+               autocomplete="off" autocapitalize="words" spellcheck="false" enterkeyhint="go"
+               placeholder="Nhập tên của bạn…" aria-label="Tên của bạn"
+               aria-describedby="nameError" aria-required="true">
+      </div>
+      <p id="nameError" class="error" role="alert" aria-live="polite"></p>
+      <button id="startBtn" class="btn" type="submit"><span>Bắt đầu</span></button>
+    </form>
+  </section>
+
+  <!-- Flash sáng dịu khi vào cảnh chính -->
+  <div id="flash" aria-hidden="true"></div>
+
+  <!-- Nhạc nền: đường dẫn file chỉ đặt MỘT chỗ duy nhất trong js/config.js (audio.js gán src) -->
+  <audio id="bgm" preload="auto" loop></audio>
+</div>
+
+<!-- Script cổ điển (không dùng ES module) để chạy được khi mở trực tiếp bằng file:// -->
+<script src="js/utils.js"></script>
+<script src="js/config.js"></script>
+<script src="js/timeline.js"></script>
+<script src="js/camera.js"></script>
+<script src="js/sky.js"></script>
+<script src="js/tree.js"></script>
+<script src="js/wind.js"></script>
+<script src="js/petals.js"></script>
+<script src="js/ground.js"></script>
+<script src="js/pond.js"></script>
+<script src="js/stickman.js"></script>
+<script src="js/fireflies.js"></script>
+<script src="js/postfx.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
