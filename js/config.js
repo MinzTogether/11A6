@@ -94,7 +94,7 @@
 
     /* ---- Cây anh đào ---- */
     tree: {
-      seedIndex: 0,                                      // chọn trong App.utils.TREE_SEEDS (0..5)
+      seedIndex: 1,                                      // chọn trong App.utils.TREE_SEEDS (0..5); 1 = tán rộng, lệch phải
       depth: 8,                                          // độ sâu đệ quy (7–9)
       children: { min: 2, max: 3, pThree: 0.35 },        // số nhánh con, xác suất có nhánh thứ ba
       lengthRatio: [0.68, 0.8],                          // tỉ lệ dài con/cha
@@ -103,6 +103,8 @@
       lightBias: 0.12,                                   // thiên hướng vươn lên phía ánh sáng
       droop: 0.22,                                       // độ rủ của cành mảnh
       trunkHeight: 300, trunkWidth: 54,                  // chiều cao/độ dày thân (đơn vị ảo)
+      fitTop: 0.1,                                       // đỉnh tán không cao quá mức này (tỉ lệ chiều cao khung); thân tự co lại cho vừa
+      lowest: 0.5,                                       // ngọn cành cấp ≥3 không thấp hơn mức này (tỉ lệ chiều cao khung)
       rootFlare: 1.7, rootCount: 4,                      // chân rễ nở rộng, số rễ nổi
       childStart: [0.7, 0.85],                           // nhánh con bắt đầu khi cha đạt 70–85%
       bloomDelayPerDepth: 0.55,                          // trễ nở hoa theo độ sâu cành (giây) → sóng lan ra ngoài
