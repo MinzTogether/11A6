@@ -1,7 +1,5 @@
 # PROMPT: Website chúc mừng 20/10 – "Hoàng hôn dưới tán anh đào"
 
-> **Cách dùng:** Gửi nguyên văn nội dung bên dưới cho AI, đính kèm file nhạc nền (đổi tên thành `music.mp3`, hoặc nói rõ tên file).
-
 ---
 
 ## 0. VAI TRÒ & MỤC TIÊU
