@@ -30,9 +30,9 @@
     if (done) waiters.length = 0;
   }
   function finish(ok) {
+    if (ok) { A.ready = true; A.failed = false; A.progress = 1; notify(true, true); return; }   // tải xong (kể cả muộn sau khi quá thời gian chờ)
     if (A.ready || A.failed) return;
-    A.ready = ok; A.failed = !ok; A.progress = 1;
-    notify(true, ok);
+    A.failed = true; A.progress = 1; notify(true, false);
   }
 
   A.prepare = function () {
@@ -50,12 +50,12 @@
       });
       a.src = AC.src;                                            // MỘT chỗ duy nhất: config.audio.src
       a.load();
-      setTimeout(function () { if (!A.ready && !A.failed) finish(a.readyState >= 3); }, 14000);
+      setTimeout(function () { if (!A.ready && !A.failed) { A.timedOut = true; A.progress = 1; notify(true, false); } }, 14000);   // chờ quá lâu: cho vào cảnh trước, nhạc tải xong sau vẫn phát được
     } catch (e) { finish(false); }
   };
   A.load = function (onProg, onDone) {
     A.prepare();
-    if (A.ready || A.failed) { if (onProg) onProg(1); if (onDone) onDone(A.ready); return; }
+    if (A.ready || A.failed || A.timedOut) { if (onProg) onProg(1); if (onDone) onDone(A.ready); return; }
     waiters.push({ prog: onProg, done: onDone });
   };
 

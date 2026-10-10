@@ -304,7 +304,11 @@
 
     el.input.addEventListener('compositionstart', function () { composing = true; });
     el.input.addEventListener('compositionend', function () { composing = false; lastComp = performance.now(); });
-    el.input.addEventListener('keydown', function (e) { if (e.key === 'Enter') enterBlocked = !!(e.isComposing || composing || e.keyCode === 229); });
+    el.input.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter') return;
+      enterBlocked = !!(e.isComposing || composing || e.keyCode === 229);
+      setTimeout(function () { enterBlocked = false; }, 0);      // submit (nếu có) chạy đồng bộ ngay sau keydown; hết lượt thì mở lại để nút "Bắt đầu" không bị chặn nhầm
+    });
     el.input.addEventListener('input', function () {
       if (el.input.classList.contains('invalid')) { el.input.classList.remove('invalid'); el.input.setAttribute('aria-invalid', 'false'); el.error.classList.remove('show'); }
     });
